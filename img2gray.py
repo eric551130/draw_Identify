@@ -2,7 +2,7 @@ from glob import glob
 import os
 import cv2
 
-paths = glob(os.path.join('dict/','*'))
+paths = glob(os.path.join('train/*/','*'))
 
 for path in paths:
     img = cv2.imread(path)
