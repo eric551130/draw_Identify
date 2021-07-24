@@ -1,27 +1,50 @@
 from bs4 import BeautifulSoup
 import requests
-import os
+import os,time
+from selenium import webdriver
+import base64
 
 if not os.path.exists('train'):
-    os.mkdir('train')  # 建立資料夾
+    os.mkdir('train')
     print("creat:", 'train')
 
 input_image = input("輸入:")
+#input_image = 'cat'
 
-response = requests.get(f"https://unsplash.com/s/photos/{input_image}")
+if not os.path.exists(f'train/{input_image}'):
+    os.mkdir(f'train/{input_image}')
+    print("creat:", f'train/{input_image}')
 
-soup = BeautifulSoup(response.text,"lxml")
+driver=webdriver.Chrome('chromedriver.exe')
 
-results = soup.find_all("img",{"class":"_2UpQX"},limit=5)
+driver.get(f"https://www.google.com.tw/search?q={input_image}&source=lnms&tbm=isch")
+#response = requests.get(f"https://www.google.com.tw/search?q={input_image}&source=lnms&tbm=isch")
 
-image_links = [result.get("src") for result in results] #圖片來源
+for i in range(5):
+    driver.execute_script(f"window.scrollTo({i*2000}, {i*2000+2000});")
+    time.sleep(0.5)
 
-for index, link in enumerate(image_links):
-    if not os.path.exists(f'train/{input_image}'):
-        os.mkdir(f'train/{input_image}') #建立資料夾
-        print("creat:", f'train/{input_image}')
+soup = BeautifulSoup(driver.page_source,'lxml')
 
-    img = requests.get(link) #下載
+items = driver.find_elements_by_class_name("rg_i.Q4LuWd")
 
-    with open(f'train/{input_image}' + "\\" + str(index+1) + ".jpg", "ab") as file:
-        file.write(img.content)
+for item in items:
+    if i == 110:
+        break
+    img_url = item.get_attribute('src')
+    #print(img_url)
+    if img_url != None:
+        if 'data' in img_url:
+            continue
+        i += 1
+        img = requests.get(img_url)
+        img_name = f'train/{input_image}/' + str(i) + '.png'
+        with open(img_name, 'wb') as file:  # 以byte形式將圖片資料寫入
+            file.write(img.content)
+            file.flush()
+        file.close()
+        print(f'第 {i} 張')
+
+print(i)
+
+driver.close()
