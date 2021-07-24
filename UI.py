@@ -1,10 +1,14 @@
 import tkinter as tk
 from PIL import ImageGrab
+from prediction import prediction
 
 window = tk.Tk()
 
 window.title('UI')
 
+v = tk.StringVar()
+text = tk.Label(window, width=20, textvariable= v, font=('Arial', 20), height=1)
+text.pack()
 
 canvas = tk.Canvas(window,width = 512,height = 512,bg='white')
 canvas.pack()
@@ -19,7 +23,14 @@ def paint(event):
 canvas.bind("<B1-Motion>", paint)
 
 def submit():
-    print('set')
+    x = window.winfo_rootx() + canvas.winfo_x() + 2
+    y = window.winfo_rooty() + canvas.winfo_y() + 2
+    x1 = x + canvas.winfo_width() - 4
+    y1 = y + canvas.winfo_height() - 4
+    ImageGrab.grab().crop((x, y, x1, y1)).save("result.jpg")
+    final = prediction("result.jpg")
+    v.set(final)
+    print(final)
 
 def clear():
     canvas.delete("all")

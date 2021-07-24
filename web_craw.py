@@ -17,7 +17,7 @@ if not os.path.exists(f'train/{input_image}'):
 
 driver=webdriver.Chrome('chromedriver.exe')
 
-driver.get(f"https://www.google.com.tw/search?q={input_image}&source=lnms&tbm=isch")
+driver.get(f"https://www.google.com.tw/search?q={input_image}+animal&source=lnms&tbm=isch")
 #response = requests.get(f"https://www.google.com.tw/search?q={input_image}&source=lnms&tbm=isch")
 
 for i in range(5):
@@ -28,8 +28,10 @@ soup = BeautifulSoup(driver.page_source,'lxml')
 
 items = driver.find_elements_by_class_name("rg_i.Q4LuWd")
 
+i = 0
+
 for item in items:
-    if i == 110:
+    if i == 130:
         break
     img_url = item.get_attribute('src')
     #print(img_url)
@@ -45,6 +47,5 @@ for item in items:
         file.close()
         print(f'第 {i} 張')
 
-print(i)
 
 driver.close()
