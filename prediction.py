@@ -14,7 +14,7 @@ class Ani_dataset(Dataset):
     def __init__(self,img_path):
         self.img_path = img_path
         #self.name
-        print(self.img_path)
+        #print(self.img_path)
 
     def __getitem__(self, item):
         image = read_image(path=self.img_path)
@@ -46,12 +46,15 @@ def prediction(img_path):
         _, predicted = torch.max(outputs.data, 1)
         _, predictions = torch.max(outputs, 1)
 
+        Softmax = nn.Softmax(dim=1)
+        outputs2 = Softmax(outputs)
+        Probability = '{:.2f} %'.format(float(outputs2[0][predicted])*100)
         #print(classes[labels],'Pre = ',classes[predicted])
         #imshow(torchvision.utils.make_grid(images))
         pre_final = classes[predictions]
         #print(predicted,predictions)
 
-    return pre_final
+    return pre_final, Probability
 
 if __name__ == "__main__":
     final = prediction('temp.jpg')

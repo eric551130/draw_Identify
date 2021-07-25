@@ -19,5 +19,11 @@
 
 ## demo
 
+### ---ver.1---
+
 ![image](demo/demo1.png)
 
+### ---ver.2---
+add open function and probability of this animal
+
+![image](demo/demo2.png)
